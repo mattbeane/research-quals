@@ -309,6 +309,56 @@ def remind(
     typer.echo(f"Created reminder #{reminder_id}: {text} (due {date})")
 
 
+# ── Deal context (for automated assessment) ────────────────────────────────
+
+@app.command("deal-context")
+def deal_context(
+    deal_id: int = typer.Argument(..., help="Deal ID"),
+):
+    """Dump all context for a deal as JSON (for AI assessment)."""
+    import json
+    from skillbench_pipeline.db import get_opportunity, list_activities, list_contacts, list_reminders
+    _ensure_db()
+
+    opp = asyncio.run(get_opportunity(_db(), deal_id))
+    if not opp:
+        typer.echo(f"Deal #{deal_id} not found.")
+        raise typer.Exit(1)
+
+    contacts = asyncio.run(list_contacts(_db(), org_id=opp["org_id"]))
+    activities = asyncio.run(list_activities(_db(), org_id=opp["org_id"], limit=30))
+    reminders_list = asyncio.run(list_reminders(_db()))
+    deal_reminders = [r for r in reminders_list if r.get("opportunity_id") == deal_id]
+
+    context = {
+        "deal": opp,
+        "contacts": contacts,
+        "recent_activities": activities,
+        "reminders": deal_reminders,
+    }
+    typer.echo(json.dumps(context, indent=2, default=str))
+
+
+@app.command("deal-update-notes")
+def deal_update_notes(
+    deal_id: int = typer.Argument(..., help="Deal ID"),
+    notes: str = typer.Option(..., help="New notes content"),
+    probability: int = typer.Option(None, help="Updated probability 0-100"),
+    value: int = typer.Option(None, help="Updated value in dollars"),
+):
+    """Update deal notes (and optionally probability/value) from assessment."""
+    from skillbench_pipeline.db import update_opportunity
+    _ensure_db()
+
+    fields = {"notes": notes}
+    if probability is not None:
+        fields["probability"] = probability
+    if value is not None:
+        fields["value_cents"] = value * 100
+    asyncio.run(update_opportunity(_db(), deal_id, **fields))
+    typer.echo(f"Updated deal #{deal_id}")
+
+
 # ── Server ─────────────────────────────────────────────────────────────────
 
 @app.command()
