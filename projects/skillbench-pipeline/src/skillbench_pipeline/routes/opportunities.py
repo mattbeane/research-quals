@@ -37,7 +37,7 @@ async def api_create_opp(body: OppCreate):
 
 @router.put("/opps/{opp_id}")
 async def api_update_opp(opp_id: int, body: OppUpdate):
-    await update_opportunity(_db(), opp_id, **body.model_dump(exclude_none=True))
+    await update_opportunity(_db(), opp_id, **body.model_dump(exclude_unset=True))
     return {"ok": True}
 
 

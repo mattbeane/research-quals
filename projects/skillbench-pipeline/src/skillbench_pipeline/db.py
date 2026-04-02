@@ -274,7 +274,15 @@ async def list_opportunities(db_path: str, stage: str | None = None,
         db.row_factory = aiosqlite.Row
         query = """SELECT op.*, o.name as org_name, c.name as contact_name,
                           (SELECT MAX(changed_at) FROM stage_history sh
-                           WHERE sh.opportunity_id = op.id) as last_stage_change
+                           WHERE sh.opportunity_id = op.id) as last_stage_change,
+                          (SELECT MAX(a.occurred_at) FROM activities a
+                           WHERE a.org_id = op.org_id) as last_activity,
+                          CAST(julianday('now') - julianday(
+                              COALESCE(
+                                  (SELECT MAX(a2.occurred_at) FROM activities a2 WHERE a2.org_id = op.org_id),
+                                  op.created_at
+                              )
+                          ) AS INTEGER) as days_since_contact
                    FROM opportunities op
                    LEFT JOIN organizations o ON o.id = op.org_id
                    LEFT JOIN contacts c ON c.id = op.contact_id
@@ -309,7 +317,7 @@ async def get_opportunity(db_path: str, opp_id: int) -> dict | None:
 async def update_opportunity(db_path: str, opp_id: int, **fields) -> None:
     allowed = {"title", "deal_type", "value_cents", "probability",
                "expected_close_date", "contact_id", "loss_reason", "notes"}
-    updates = {k: v for k, v in fields.items() if k in allowed and v is not None}
+    updates = {k: v for k, v in fields.items() if k in allowed}
     if not updates:
         return
     updates["updated_at"] = _now()

@@ -140,12 +140,22 @@ async function loadPipeline() {
       card.className = 'deal-card';
       card.draggable = true;
       card.dataset.id = opp.id;
+      const stale = opp.days_since_contact;
+      const staleClass = stale > 30 ? 'stale-red' : stale > 14 ? 'stale-amber' : '';
+      const staleLabel = stale > 30 ? `${stale}d stale` : stale > 14 ? `${stale}d quiet` : '';
+      const notesSnippet = opp.notes ? opp.notes.split('.')[0].substring(0, 80) : '';
+      card.className = `deal-card ${staleClass}`;
       card.innerHTML = `
-        <div class="org-name">${opp.org_name || ''}</div>
+        <div class="deal-card-top">
+          <div class="org-name">${opp.org_name || ''}</div>
+          ${staleLabel ? `<span class="stale-badge ${staleClass}">${staleLabel}</span>` : ''}
+        </div>
         <div class="deal-title">${opp.title}</div>
+        ${notesSnippet ? `<div class="deal-context">${notesSnippet}</div>` : ''}
         <div class="deal-meta">
           <span class="deal-value">${fmtDollars(opp.value_cents)}</span>
-          <span class="deal-days">${daysAgo(opp.last_stage_change)} in stage</span>
+          <span class="deal-prob">${opp.probability || 0}%</span>
+          <span class="deal-days">${opp.last_activity ? fmtDate(opp.last_activity) : 'no activity'}</span>
         </div>
       `;
       card.addEventListener('dragstart', e => {
@@ -489,7 +499,7 @@ async function updateDeal() {
     value_cents: (parseInt($('#edit-deal-value').value) || 0) * 100,
     deal_type: $('#edit-deal-type').value,
     probability: parseInt($('#edit-deal-probability').value) || 0,
-    notes: $('#edit-deal-notes').value || undefined,
+    notes: $('#edit-deal-notes').value || '',
   };
   await api(`/api/opps/${id}`, { method: 'PUT', body: JSON.stringify(body) });
 
