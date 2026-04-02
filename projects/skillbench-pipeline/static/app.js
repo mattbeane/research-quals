@@ -1,6 +1,7 @@
 /* SkillBench Pipeline — Dashboard JS */
 
 const API = '';  // Same origin
+const TOKEN = new URLSearchParams(window.location.search).get('token') || '';
 const STAGES = ['lead', 'qualified', 'proposal', 'negotiation', 'won', 'lost'];
 const STAGE_COLORS = {
   lead: '#5a6078', qualified: '#43BBEA', proposal: '#7b68ee',
@@ -46,7 +47,8 @@ function fmtDateTime(iso) {
 }
 
 async function api(path, opts = {}) {
-  const url = API + path;
+  const sep = path.includes('?') ? '&' : '?';
+  const url = API + path + (TOKEN ? `${sep}token=${TOKEN}` : '');
   const res = await fetch(url, {
     headers: { 'Content-Type': 'application/json', ...opts.headers },
     ...opts,
