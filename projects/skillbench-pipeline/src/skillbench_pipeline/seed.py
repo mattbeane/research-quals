@@ -42,6 +42,13 @@ DOMAINS = {
     "GitLabs": "gitlab.com",
     "Verizon": "verizon.com",
     "Asana": "asana.com",
+    "Hearst": "hearst.com",
+    "SoFi": "sofi.org",
+    "Nationwide": "nationwide.com",
+    "Graham Holdings": "ghco.com",
+    "J.Crew": "jcrew.com",
+    "S&P Global": "spglobal.com",
+    "Teamraderie": "teamraderie.com",
 }
 
 # Size classifications
@@ -54,18 +61,21 @@ SIZES = {
     "Starbucks": "enterprise", "UpWork": "enterprise", "Walmart": "enterprise",
     "Amazon": "enterprise", "Andela": "mid-market", "Atlassian": "enterprise",
     "GitLabs": "enterprise", "Verizon": "enterprise", "Asana": "mid-market",
+    "Hearst": "enterprise", "SoFi": "mid-market", "Nationwide": "enterprise",
+    "Graham Holdings": "enterprise", "J.Crew": "mid-market",
+    "S&P Global": "enterprise", "Teamraderie": "startup",
 }
 
-# Known deals based on document inspection
+# Known deals based on actual SOWs, emails, and documents
 SEED_DEALS = [
     {
         "org": "Microsoft",
         "title": "Microsoft Phase 1 - RoleBench Assessment",
         "stage": "won",
         "deal_type": "assessment",
-        "value_cents": 5_000_000,  # $50K
+        "value_cents": 40_000_000,  # ~$400K collected
         "probability": 100,
-        "notes": "Multi-phase SOWs, Phase 1 complete with reports delivered",
+        "notes": "Phase 1 complete. ~$400K collected. 63K developers analyzed from job descriptions.",
     },
     {
         "org": "Microsoft",
@@ -74,16 +84,16 @@ SEED_DEALS = [
         "deal_type": "platform_arr",
         "value_cents": 50_000_000,  # $500K ARR
         "probability": 40,
-        "notes": "Round 2 SOW in discussion",
+        "notes": "Round 2 SOW in discussion. Bob Woods + Katy George (M12). Deck shared Mar 2026.",
     },
     {
         "org": "CommBank",
         "title": "CommBank Pilot - Causal Study",
         "stage": "won",
         "deal_type": "assessment",
-        "value_cents": 5_000_000,  # $50K
+        "value_cents": 40_000_000,  # ~$400K total, ~$100K collected
         "probability": 100,
-        "notes": "Executed SOW, commercial tracking in progress",
+        "notes": "Multiple SOWs, sprint-based work, causal study report. ~$400K total, ~$100K collected. SkillMeter telemetry integration.",
     },
     {
         "org": "McKinsey",
@@ -101,16 +111,34 @@ SEED_DEALS = [
         "deal_type": "assessment",
         "value_cents": 5_000_000,  # $50K
         "probability": 30,
-        "notes": "NDA and vendor intake forms executed",
+        "notes": "CTO responded. NDA and vendor intake executed. Active engagement.",
     },
     {
-        "org": "OpenAI",
-        "title": "OpenAI Research Collaboration",
+        "org": "Hearst",
+        "title": "Hearst CTO Assessment",
+        "stage": "proposal",
+        "deal_type": "assessment",
+        "value_cents": 5_000_000,  # $50K
+        "probability": 40,
+        "notes": "Peter Goldstein (champion). Pitch for Mahendra (CTO) + Rachel. James Genone assisting. Active since Feb 2026.",
+    },
+    {
+        "org": "SoFi",
+        "title": "SoFi ETLS Pilot",
         "stage": "qualified",
-        "deal_type": "research",
-        "value_cents": 0,
-        "probability": 50,
-        "notes": "Research customer relationship",
+        "deal_type": "assessment",
+        "value_cents": 8_000_000,  # $80K pilot proposed
+        "probability": 15,
+        "notes": "Ian Eslick contact. $80K pilot proposed Oct 2025. Re-engaged Jan 2026 with lower costs.",
+    },
+    {
+        "org": "Walmart",
+        "title": "Walmart Assessment",
+        "stage": "qualified",
+        "deal_type": "assessment",
+        "value_cents": 5_000_000,  # $50K
+        "probability": 25,
+        "notes": "Jessica Neal intro. Contacts: Beila Leboeuf, Maren Waggoner, Lusine Mosinyan, Mat Wisner. Meeting Mar 17+.",
     },
 ]
 
