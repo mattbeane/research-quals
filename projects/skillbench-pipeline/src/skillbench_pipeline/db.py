@@ -322,6 +322,15 @@ async def update_opportunity(db_path: str, opp_id: int, **fields) -> None:
         await db.commit()
 
 
+async def delete_opportunity(db_path: str, opp_id: int) -> None:
+    async with aiosqlite.connect(db_path) as db:
+        await db.execute("DELETE FROM stage_history WHERE opportunity_id = ?", (opp_id,))
+        await db.execute("DELETE FROM activities WHERE opportunity_id = ?", (opp_id,))
+        await db.execute("DELETE FROM reminders WHERE opportunity_id = ?", (opp_id,))
+        await db.execute("DELETE FROM opportunities WHERE id = ?", (opp_id,))
+        await db.commit()
+
+
 async def move_opportunity_stage(db_path: str, opp_id: int, new_stage: str) -> None:
     async with aiosqlite.connect(db_path) as db:
         db.row_factory = aiosqlite.Row

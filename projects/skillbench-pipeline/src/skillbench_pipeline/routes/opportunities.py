@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException
 
 from skillbench_pipeline.config import Settings
 from skillbench_pipeline.db import (
-    create_opportunity, get_opportunity, list_opportunities,
+    create_opportunity, delete_opportunity, get_opportunity, list_opportunities,
     move_opportunity_stage, update_opportunity,
 )
 from skillbench_pipeline.models import OppCreate, OppUpdate, StageUpdate
@@ -38,6 +38,15 @@ async def api_create_opp(body: OppCreate):
 @router.put("/opps/{opp_id}")
 async def api_update_opp(opp_id: int, body: OppUpdate):
     await update_opportunity(_db(), opp_id, **body.model_dump(exclude_none=True))
+    return {"ok": True}
+
+
+@router.delete("/opps/{opp_id}")
+async def api_delete_opp(opp_id: int):
+    opp = await get_opportunity(_db(), opp_id)
+    if not opp:
+        raise HTTPException(404, "Opportunity not found")
+    await delete_opportunity(_db(), opp_id)
     return {"ok": True}
 
 

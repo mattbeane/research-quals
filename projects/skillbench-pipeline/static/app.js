@@ -151,6 +151,11 @@ async function loadPipeline() {
         card.classList.add('dragging');
       });
       card.addEventListener('dragend', () => card.classList.remove('dragging'));
+      card.addEventListener('click', e => {
+        if (e.target.closest('[draggable]') && !card.classList.contains('dragging')) {
+          openEditDealModal(opp);
+        }
+      });
       body.appendChild(card);
     });
 
@@ -454,6 +459,58 @@ async function saveReminder() {
   await api('/api/reminders', { method: 'POST', body: JSON.stringify(body) });
   closeModal('modal-new-reminder');
   loadReminders();
+  loadSummary();
+}
+
+// ── Edit / Delete Deals ────────────────────────────────────────
+
+function openEditDealModal(opp) {
+  $('#edit-deal-id').value = opp.id;
+  $('#edit-deal-heading').textContent = `${opp.org_name}: ${opp.title}`;
+  $('#edit-deal-title').value = opp.title;
+  $('#edit-deal-value').value = Math.round((opp.value_cents || 0) / 100);
+  $('#edit-deal-type').value = opp.deal_type || 'other';
+  $('#edit-deal-stage').value = opp.stage;
+  $('#edit-deal-probability').value = opp.probability || 0;
+  $('#edit-deal-notes').value = opp.notes || '';
+  $('#modal-edit-deal').classList.add('open');
+}
+
+async function updateDeal() {
+  const id = $('#edit-deal-id').value;
+  const newStage = $('#edit-deal-stage').value;
+  const opp = allOpps.find(o => o.id == id);
+
+  // Update fields
+  const body = {
+    title: $('#edit-deal-title').value,
+    value_cents: (parseInt($('#edit-deal-value').value) || 0) * 100,
+    deal_type: $('#edit-deal-type').value,
+    probability: parseInt($('#edit-deal-probability').value) || 0,
+    notes: $('#edit-deal-notes').value || undefined,
+  };
+  await api(`/api/opps/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+
+  // Move stage if changed
+  if (opp && opp.stage !== newStage) {
+    await api(`/api/opps/${id}/stage`, {
+      method: 'PATCH',
+      body: JSON.stringify({ stage: newStage }),
+    });
+  }
+
+  closeModal('modal-edit-deal');
+  loadPipeline();
+  loadSummary();
+}
+
+async function deleteDeal() {
+  const id = $('#edit-deal-id').value;
+  const title = $('#edit-deal-title').value;
+  if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+  await api(`/api/opps/${id}`, { method: 'DELETE' });
+  closeModal('modal-edit-deal');
+  loadPipeline();
   loadSummary();
 }
 

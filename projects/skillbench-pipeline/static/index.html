@@ -133,6 +133,45 @@
   </div>
 </div>
 
+<!-- Edit Deal Modal -->
+<div class="modal-overlay" id="modal-edit-deal">
+  <div class="modal">
+    <h2 id="edit-deal-heading">Edit Deal</h2>
+    <input type="hidden" id="edit-deal-id">
+    <label>Title</label>
+    <input id="edit-deal-title" type="text">
+    <label>Value ($)</label>
+    <input id="edit-deal-value" type="number" min="0">
+    <label>Type</label>
+    <select id="edit-deal-type">
+      <option value="assessment">Assessment</option>
+      <option value="platform_arr">Platform ARR</option>
+      <option value="research">Research</option>
+      <option value="other">Other</option>
+    </select>
+    <label>Stage</label>
+    <select id="edit-deal-stage">
+      <option value="lead">Lead</option>
+      <option value="qualified">Qualified</option>
+      <option value="proposal">Proposal</option>
+      <option value="negotiation">Negotiation</option>
+      <option value="won">Won</option>
+      <option value="lost">Lost</option>
+    </select>
+    <label>Probability (%)</label>
+    <input id="edit-deal-probability" type="number" min="0" max="100">
+    <label>Notes</label>
+    <textarea id="edit-deal-notes"></textarea>
+    <div class="modal-actions" style="justify-content:space-between">
+      <button class="btn-delete" onclick="deleteDeal()" style="background:var(--red);color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-family:'Figtree',sans-serif;font-size:0.85rem;font-weight:500">Delete</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn-cancel" onclick="closeModal('modal-edit-deal')">Cancel</button>
+        <button class="btn-save" onclick="updateDeal()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Log Activity Modal -->
 <div class="modal-overlay" id="modal-log-activity">
   <div class="modal">

@@ -165,6 +165,7 @@ section.active { display: block; }
 
 .deal-card:hover {
   box-shadow: 0 4px 12px rgba(58, 63, 81, 0.12);
+  border-color: var(--cyan);
 }
 
 .deal-card.dragging {
