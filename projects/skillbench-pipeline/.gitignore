@@ -1,0 +1,6 @@
+pipeline.db
+.venv/
+__pycache__/
+*.pyc
+.env
+uv.lock

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillBench Pipeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <h1>SkillBench Pipeline</h1>
+  <div class="summary-bar">
+    <div class="stat">
+      <div class="stat-value" id="stat-deals">-</div>
+      <div>Active Deals</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-value">-</div>
+      <div>Pipeline Value</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-weighted">-</div>
+      <div>Weighted</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-reminders">-</div>
+      <div>Overdue</div>
+    </div>
+  </div>
+</div>
+
+<!-- Navigation -->
+<nav>
+  <button class="active" data-tab="pipeline">Pipeline</button>
+  <button data-tab="activity">Activity</button>
+  <button data-tab="directory">Directory</button>
+  <button data-tab="reminders">Reminders</button>
+</nav>
+
+<div class="content">
+
+  <!-- Pipeline Tab -->
+  <section id="tab-pipeline" class="active">
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
+      <button class="filter-bar" style="display:inline" onclick="openNewDealModal()">+ New Deal</button>
+    </div>
+    <div class="pipeline-board" id="pipeline-board"></div>
+    <div class="funnel" id="funnel"></div>
+  </section>
+
+  <!-- Activity Tab -->
+  <section id="tab-activity">
+    <div class="filter-bar">
+      <select id="filter-type">
+        <option value="">All Types</option>
+        <option value="email">Email</option>
+        <option value="meeting">Meeting</option>
+        <option value="call">Call</option>
+        <option value="slack">Slack</option>
+        <option value="note">Note</option>
+      </select>
+      <select id="filter-days">
+        <option value="7">Last 7 Days</option>
+        <option value="30">Last 30 Days</option>
+        <option value="90">Last 90 Days</option>
+        <option value="">All Time</option>
+      </select>
+      <button onclick="openLogActivityModal()">+ Log Activity</button>
+    </div>
+    <div class="activity-list" id="activity-list"></div>
+  </section>
+
+  <!-- Directory Tab -->
+  <section id="tab-directory">
+    <div class="directory-layout">
+      <div class="org-list">
+        <div class="org-list-header">
+          <input type="text" id="org-search" placeholder="Search organizations...">
+        </div>
+        <div id="org-list-body"></div>
+      </div>
+      <div class="org-detail" id="org-detail">
+        <div class="empty-state">Select an organization</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reminders Tab -->
+  <section id="tab-reminders">
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
+      <button class="filter-bar" style="display:inline" onclick="openNewReminderModal()">+ New Reminder</button>
+    </div>
+    <div id="reminders-container"></div>
+  </section>
+
+</div>
+
+<!-- New Deal Modal -->
+<div class="modal-overlay" id="modal-new-deal">
+  <div class="modal">
+    <h2>New Deal</h2>
+    <label>Organization</label>
+    <select id="deal-org"></select>
+    <label>Title</label>
+    <input id="deal-title" type="text" placeholder="e.g., Phase 2 Assessment">
+    <label>Value ($)</label>
+    <input id="deal-value" type="number" placeholder="50000" min="0">
+    <label>Type</label>
+    <select id="deal-type">
+      <option value="assessment">Assessment ($50K)</option>
+      <option value="platform_arr">Platform ARR ($500K/yr)</option>
+      <option value="research">Research</option>
+      <option value="other">Other</option>
+    </select>
+    <label>Stage</label>
+    <select id="deal-stage">
+      <option value="lead">Lead</option>
+      <option value="qualified">Qualified</option>
+      <option value="proposal">Proposal</option>
+      <option value="negotiation">Negotiation</option>
+    </select>
+    <label>Probability (%)</label>
+    <input id="deal-probability" type="number" value="10" min="0" max="100">
+    <label>Notes</label>
+    <textarea id="deal-notes" placeholder="Optional notes..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-new-deal')">Cancel</button>
+      <button class="btn-save" onclick="saveDeal()">Create Deal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Log Activity Modal -->
+<div class="modal-overlay" id="modal-log-activity">
+  <div class="modal">
+    <h2>Log Activity</h2>
+    <label>Organization</label>
+    <select id="act-org"></select>
+    <label>Type</label>
+    <select id="act-type">
+      <option value="email">Email</option>
+      <option value="meeting">Meeting</option>
+      <option value="call">Call</option>
+      <option value="slack">Slack</option>
+      <option value="note">Note</option>
+      <option value="other">Other</option>
+    </select>
+    <label>Direction</label>
+    <select id="act-direction">
+      <option value="outbound">Outbound</option>
+      <option value="inbound">Inbound</option>
+      <option value="internal">Internal</option>
+    </select>
+    <label>Summary</label>
+    <textarea id="act-summary" placeholder="What happened?"></textarea>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-log-activity')">Cancel</button>
+      <button class="btn-save" onclick="saveActivity()">Log Activity</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Reminder Modal -->
+<div class="modal-overlay" id="modal-new-reminder">
+  <div class="modal">
+    <h2>New Reminder</h2>
+    <label>Due Date</label>
+    <input id="rem-date" type="date">
+    <label>Reminder</label>
+    <textarea id="rem-text" placeholder="Follow up on..."></textarea>
+    <label>Organization (optional)</label>
+    <select id="rem-org"><option value="">None</option></select>
+    <label>Deal (optional)</label>
+    <select id="rem-deal"><option value="">None</option></select>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-new-reminder')">Cancel</button>
+      <button class="btn-save" onclick="saveReminder()">Create Reminder</button>
+    </div>
+  </div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
