@@ -210,6 +210,29 @@ section.active { display: block; }
   border-radius: 3px;
 }
 
+.deal-type-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  letter-spacing: 0.3px;
+}
+
+.deal-type-badge.platform_arr {
+  background: var(--cyan-light);
+  color: #1a7fa8;
+}
+
+.deal-type-badge.assessment {
+  background: var(--faint-gray);
+  color: var(--charcoal-light);
+}
+
+.deal-type-badge.research {
+  background: #f3e8ff;
+  color: #6b21a8;
+}
+
 .deal-card .deal-context {
   font-size: 0.7rem;
   color: var(--charcoal-light);

@@ -518,6 +518,19 @@ async def pipeline_summary(db_path: str) -> dict:
         )
         recent_activities = (await cur.fetchone())[0]
 
+        # ARR vs one-time split
+        cur = await db.execute(
+            """SELECT
+                CASE WHEN deal_type = 'platform_arr' THEN 'arr' ELSE 'one_time' END as rev_type,
+                COUNT(*) as count,
+                SUM(value_cents) as total_cents,
+                SUM(value_cents * probability / 100) as weighted_cents
+            FROM opportunities WHERE stage NOT IN ('won', 'lost')
+            GROUP BY rev_type"""
+        )
+        rev_split = {r[0]: {"count": r[1], "total_cents": r[2] or 0, "weighted_cents": r[3] or 0}
+                     for r in await cur.fetchall()}
+
         return {
             "stages": stages,
             "active_deals": active["active_deals"] or 0,
@@ -525,6 +538,8 @@ async def pipeline_summary(db_path: str) -> dict:
             "weighted_value_cents": active["weighted_value_cents"] or 0,
             "overdue_reminders": overdue,
             "recent_activities_7d": recent_activities,
+            "arr": rev_split.get("arr", {"count": 0, "total_cents": 0, "weighted_cents": 0}),
+            "one_time": rev_split.get("one_time", {"count": 0, "total_cents": 0, "weighted_cents": 0}),
         }
 
 

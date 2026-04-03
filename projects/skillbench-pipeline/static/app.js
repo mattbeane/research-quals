@@ -83,7 +83,8 @@ function loadTab(tab) {
 async function loadSummary() {
   const s = await api('/api/dashboard/summary');
   $('#stat-deals').textContent = s.active_deals;
-  $('#stat-value').textContent = fmtDollars(s.active_value_cents);
+  $('#stat-arr').textContent = fmtDollars(s.arr?.total_cents || 0);
+  $('#stat-onetime').textContent = fmtDollars(s.one_time?.total_cents || 0);
   $('#stat-weighted').textContent = fmtDollars(s.weighted_value_cents);
   $('#stat-reminders').textContent = s.overdue_reminders;
 }
@@ -144,6 +145,7 @@ async function loadPipeline() {
       const staleClass = stale > 30 ? 'stale-red' : stale > 14 ? 'stale-amber' : '';
       const staleLabel = stale > 30 ? `${stale}d stale` : stale > 14 ? `${stale}d quiet` : '';
       const notesSnippet = opp.notes ? opp.notes.split('.')[0].substring(0, 80) : '';
+      const typeLabel = opp.deal_type === 'platform_arr' ? 'ARR' : opp.deal_type === 'assessment' ? 'ONE-TIME' : opp.deal_type === 'research' ? 'RESEARCH' : '';
       card.className = `deal-card ${staleClass}`;
       card.innerHTML = `
         <div class="deal-card-top">
@@ -154,6 +156,7 @@ async function loadPipeline() {
         ${notesSnippet ? `<div class="deal-context">${notesSnippet}</div>` : ''}
         <div class="deal-meta">
           <span class="deal-value">${fmtDollars(opp.value_cents)}</span>
+          ${typeLabel ? `<span class="deal-type-badge ${opp.deal_type}">${typeLabel}</span>` : ''}
           <span class="deal-prob">${opp.probability || 0}%</span>
           <span class="deal-days">${opp.last_activity ? fmtDate(opp.last_activity) : 'no activity'}</span>
         </div>
