@@ -206,6 +206,18 @@ The AI Supervisor capstone is the qualifying exam: review an AI-generated paper 
 
 ---
 
+## The broader question: what happens to apprenticeship?
+
+Research-quals answers a specific question: *what skills do you need to do research?* But there's a bigger question it doesn't address: *what happens to the apprenticeship infrastructure when agentic AI tools enter the loop?*
+
+When tools like theory-forge magnify novice errors and let seniors deliver outputs without juniors, legitimate peripheral participation breaks down. Students lose access to risky work. Faculty struggle to learn the new tools without looking incompetent. Shadow learning and inverted apprenticeship dynamics kick in.
+
+That broader question — how to restore the conditions for skill development in AI-disrupted environments — is addressed by a companion project: **[reforging-apprenticeship](https://github.com/mattbeane/reforging-apprenticeship)**. It provides protocol infrastructure (sandbox sessions, a trace library, co-pilot sessions, Faculty Drill, cohort telemetry) for environments where the learning is bidirectional and the traditional apprenticeship model is under strain.
+
+Research-quals teaches the skills. Reforging-apprenticeship provides the conditions under which those skills can actually develop.
+
+---
+
 ## Philosophy
 
 **Competency over credentials.** Time in program doesn't equal readiness. Demonstrated skill does.
