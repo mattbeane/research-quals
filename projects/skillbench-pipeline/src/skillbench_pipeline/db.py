@@ -531,6 +531,55 @@ async def pipeline_summary(db_path: str) -> dict:
         rev_split = {r[0]: {"count": r[1], "total_cents": r[2] or 0, "weighted_cents": r[3] or 0}
                      for r in await cur.fetchall()}
 
+        # Assessment prospects — count and growth signal
+        cur = await db.execute(
+            """SELECT COUNT(*) FROM opportunities
+               WHERE deal_type = 'assessment' AND stage NOT IN ('won', 'lost')"""
+        )
+        assess_count = (await cur.fetchone())[0]
+
+        cur = await db.execute(
+            """SELECT COUNT(*) FROM opportunities
+               WHERE deal_type = 'assessment' AND stage IN ('qualified', 'proposal', 'negotiation')"""
+        )
+        assess_qualified_plus = (await cur.fetchone())[0]
+
+        # New assessments reaching qualified+ in last 7d vs prior 7d
+        cur = await db.execute(
+            """SELECT COUNT(DISTINCT sh.opportunity_id) FROM stage_history sh
+               JOIN opportunities o ON o.id = sh.opportunity_id
+               WHERE o.deal_type = 'assessment'
+                 AND sh.to_stage IN ('qualified', 'proposal', 'negotiation')
+                 AND sh.changed_at >= datetime('now', '-7 days')"""
+        )
+        assess_new_7d = (await cur.fetchone())[0]
+
+        cur = await db.execute(
+            """SELECT COUNT(DISTINCT sh.opportunity_id) FROM stage_history sh
+               JOIN opportunities o ON o.id = sh.opportunity_id
+               WHERE o.deal_type = 'assessment'
+                 AND sh.to_stage IN ('qualified', 'proposal', 'negotiation')
+                 AND sh.changed_at >= datetime('now', '-14 days')
+                 AND sh.changed_at < datetime('now', '-7 days')"""
+        )
+        assess_prev_7d = (await cur.fetchone())[0]
+
+        cur = await db.execute(
+            """SELECT COUNT(DISTINCT sh.opportunity_id) FROM stage_history sh
+               JOIN opportunities o ON o.id = sh.opportunity_id
+               WHERE o.deal_type = 'assessment'
+                 AND sh.to_stage IN ('qualified', 'proposal', 'negotiation')
+                 AND sh.changed_at >= datetime('now', '-30 days')"""
+        )
+        assess_new_30d = (await cur.fetchone())[0]
+
+        if assess_new_7d > assess_prev_7d:
+            growth_signal = "accelerating"
+        elif assess_new_7d == assess_prev_7d:
+            growth_signal = "steady"
+        else:
+            growth_signal = "slowing"
+
         return {
             "stages": stages,
             "active_deals": active["active_deals"] or 0,
@@ -540,6 +589,13 @@ async def pipeline_summary(db_path: str) -> dict:
             "recent_activities_7d": recent_activities,
             "arr": rev_split.get("arr", {"count": 0, "total_cents": 0, "weighted_cents": 0}),
             "one_time": rev_split.get("one_time", {"count": 0, "total_cents": 0, "weighted_cents": 0}),
+            "assessments": {
+                "count": assess_count,
+                "qualified_plus": assess_qualified_plus,
+                "new_last_7d": assess_new_7d,
+                "new_last_30d": assess_new_30d,
+                "growth_signal": growth_signal,
+            },
         }
 
 

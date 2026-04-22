@@ -1,166 +1,124 @@
-# ResearchKit Quals - What's Actually Left To Build
+# SkillForge - Development Status
 
-## Status: Tools Built, Assessment Materials Needed
+## ✅ Prototype Complete
 
-**Completed:**
-- Atlas.ti parser - extracts quotes with codes
-- Anonymization engine (3 stages) - NER detection, review, application
-- Competency definitions (7 domains)
-- Assessment specifications with scoring rubrics
-- Command unlock map
+The core system is operational:
 
-**Critical Path:** Matt needs to run anonymization on his dissertation data, then we have a seed contribution for testing.
-
----
-
-## Phase 1: Seed Data & Pilot (Matt's Data)
-
-### Step 1: Complete Anonymization (2-3 hours)
-- [x] Parse Atlas.ti project → `beane-surgery-extracted.json`
-- [x] Run Stage 1 detection → `beane-surgery-entities.json`
-- [ ] **Run Stage 2 review** (interactive - Matt must do this)
-  ```bash
-  cd /Users/mattbeane/knowledge-work/projects/researchkit-quals
-  python3.11 tools/anonymize.py review seed-data/beane-surgery-entities.json
-  ```
-- [ ] **Run Stage 3 application** (after review complete)
-  ```bash
-  python3.11 tools/anonymize.py apply \
-      seed-data/beane-surgery-entities.reviewed.json \
-      seed-data/beane-surgery-extracted.json \
-      --output-dir seed-data/beane-surgery-anonymized/ --verify
-  ```
-- [ ] **Sign contributor form**
-
-### Step 2: Create Expert Baseline (4-6 hours - Matt's tacit knowledge)
-- [ ] Document top 3 mechanisms from dissertation
-- [ ] Identify key quotes for each mechanism
-- [ ] Document disconfirming evidence found
-- [ ] Write up "what makes a good coding" notes
-
-### Step 3: Write Level 1 Quiz Questions (2-3 hours)
-- [ ] Domain 1: Pattern Recognition (12 questions)
-- [ ] Domain 3: Qual Mechanism Extraction (12 questions)
-- [ ] Domain 7: Claim Verification (12 questions)
-
-**Phase 1 Total: ~10-15 hours of Matt's time**
-
----
-
-## Phase 2: Build the Infrastructure
-
-### quals CLI Commands (6-8 hours)
-- [ ] `quals-status` - Show progress and unlocks
-- [ ] `quals-take D1 L1` - Take Level 1 quiz
-- [ ] `quals-submit D3 L3` - Submit Level 3 work
-- [ ] Student record schema (JSON)
-- [ ] Progress tracking
-
-### TheoryForge Integration (2-3 hours)
-- [ ] Competency gate function
-- [ ] Integration with command dispatch
-- [ ] Helpful "locked" messages
-
-### Level 2 Feedback System (4-6 hours)
-- [ ] Compare student coding to expert baseline
-- [ ] Generate feedback report
-- [ ] Track attempts
-
----
-
-## Phase 3: Expand Domain Coverage
-
-After pilot works with Matt's data:
-
-- [ ] Domain 2: Theoretical Positioning assessment
-- [ ] Domain 4: Theoretical Framing (Zuckerman rubric-eval)
-- [ ] Domain 5: Epistemological Genre assessment
-- [ ] Domain 6: Adversarial Evidence assessment
-
----
-
-## Phase 4: Scale
-
-- [ ] Solicit faculty data contributions
-- [ ] Build contribution acceptance workflow
-- [ ] Create 2nd assessment set (retakes)
-- [ ] Build advisor certification workflow
-- [ ] Create student dashboard
-
----
-
-## What's Working Right Now
-
-### Atlas.ti Parser
 ```bash
-python3 tools/atlasti_parser.py "Project.atlpac" output.json
-```
-- Extracts all coded quotations
-- Maps codes (tags) to quotes
-- Preserves document structure
-- Handles .atlpac archives directly
-
-### Anonymization Engine
-```bash
-# Stage 1: Detect entities
-python3.11 tools/anonymize.py detect input.json
-
-# Stage 2: Review (interactive)
-python3.11 tools/anonymize.py review input.entities.json
-
-# Stage 3: Apply and verify
-python3.11 tools/anonymize.py apply reviewed.json source.json --output-dir out/ --verify
+pip install -e .
+skillforge init --name "Student" --email student@ucsb.edu
+skillforge status
+skillforge take domain-1 --level 1
+skillforge submit domain-3 --level 2 --file my-work.md
 ```
 
-**Requires:** spaCy with en_core_web_sm model
-```bash
-pip install spacy
-python -m spacy download en_core_web_sm
-```
+### What's Built
+
+**CLI (`cli/`)**
+- `skillforge.py` - Main CLI: init, status, take, submit
+- `evaluator.py` - LLM-based L2-3 evaluation with structured JSON output
+- `competency_gate.py` - TheoryForge integration (import and call `check_competency()`)
+
+**Assessments (`assessments/`)**
+- Level 1 quizzes for all 7 domains (10 MC + 2 short answer each)
+- LLM scoring for short answers
+- Question and option randomization
+- Level 2-3 task documents (D1, D3)
+
+**Infrastructure**
+- Student records in `~/.skillforge/`
+- Cooldown enforcement (7d L2, 30d L3)
+- Domain prerequisites and level progression
+- Few-shot calibrated evaluation prompts
+
+**Seed Data**
+- Expert baseline from Shadow Learning + Resourcing papers
+- 3 mechanisms documented with quote IDs and disconfirming evidence
 
 ---
 
-## Critical Dependencies
+## 🔮 Future Development Directions
 
-1. **Matt must complete Stage 2 review** - Only he knows what's identifying
-2. **Matt must create expert baseline** - Can't outsource his tacit knowledge
-3. **Need pilot students** - Test before full deployment
+These features make sense once there are actual users:
+
+### Advisor Certification (`skillforge certify`)
+Allow advisors to certify student competence without assessment for students with prior demonstrated skill (e.g., published qual paper, rigorous methods course).
+
+**Design considerations:**
+- Max 3 domains certifiable per student
+- Domains 6-7 (Adversarial, Verification) cannot be certified—must demonstrate
+- Need to decide: CLI approval vs email link vs web interface
+- Need to decide: How to verify advisor identity
+
+### Faculty Mode
+Faculty shouldn't be gated by competency requirements.
+
+**Design considerations:**
+- `skillforge faculty-mode --enable`
+- Bypasses all competency gates
+- Can view student progress
+- Can take assessments in calibration mode (not recorded)
+- Need to decide: Honor system vs institutional verification
+
+### Additional Expert Baselines
+Currently only Matt's surgery data. More baselines from different contexts would:
+- Test generalization of assessment approach
+- Provide variety for L2-3 materials
+- Allow domain-specific assessments beyond surgery examples
+
+### Question Banking
+Currently each domain has one fixed question set. For fairer retakes:
+- Create 2-3 question variants per item
+- Randomly select from pool each attempt
+- Track which variants student has seen
+
+### Student Dashboard for Advisors
+Web interface showing:
+- All advisees' progress
+- Pending certification requests
+- Aggregate statistics
 
 ---
 
-## Files Structure
+## 📁 Current File Structure
 
 ```
-researchkit-quals/
-├── README.md                    # Overview
-├── QUICK_START.md               # 1-page student guide
+skillforge/
+├── README.md                    # Standalone pitch
 ├── TODO.md                      # This file
+├── pyproject.toml               # pip installable
 │
-├── competencies/                # Domain definitions (complete)
-│   ├── domain-1-pattern-recognition.md
-│   ├── domain-2-theoretical-positioning.md
-│   ├── domain-3-qual-mechanism-extraction.md
-│   ├── domain-4-theoretical-framing.md
-│   ├── domain-5-epistemological-genre.md
-│   ├── domain-6-adversarial-evidence.md
-│   └── domain-7-claim-verification.md
+├── cli/
+│   ├── __init__.py
+│   ├── skillforge.py            # Main CLI
+│   ├── evaluator.py             # L2-3 LLM evaluation
+│   └── competency_gate.py       # TheoryForge integration
 │
 ├── assessments/
-│   └── ASSESSMENT_SPECS.md      # Scoring rubrics
+│   ├── ASSESSMENT_SPECS.md      # Scoring rubrics
+│   ├── level-1-domain-*.md      # L1 quizzes (all 7 domains)
+│   └── tasks/
+│       ├── level-2-domain-1-task.md
+│       ├── level-2-domain-3-task.md
+│       └── level-3-instructions.md
 │
-├── commands/
-│   ├── unlock-map.json          # Command → competency requirements
-│   └── quals-status.md          # Status command spec
+├── competencies/                # Domain definitions
+│   └── domain-*-*.md            # 7 domain specs
 │
-├── tools/                       # Working tools
-│   ├── atlasti_parser.py        # Parse .atlpac files
-│   ├── anonymize.py             # Main anonymization CLI
-│   ├── anonymize_stage1.py      # NER detection
-│   ├── anonymize_stage2.py      # Human review
-│   └── anonymize_stage3.py      # Apply & verify
+├── tools/                       # Data processing
+│   ├── atlasti_parser.py
+│   └── anonymize*.py            # 3-stage anonymization
 │
-└── seed-data/                   # Matt's dissertation (WIP)
-    ├── beane-surgery-extracted/     # Parsed project
-    ├── beane-surgery-extracted.json # Quotations + codes
-    └── beane-surgery-entities.json  # Detected entities
+└── seed-data/
+    └── beane-surgery-anonymized/
+        └── expert_baseline.md   # Matt's tacit knowledge
 ```
+
+---
+
+## Next Steps When Ready to Deploy
+
+1. **Find pilot students** - 2-3 PhD students willing to test
+2. **Run them through D1 and D3** - Validate L1 quizzes discriminate
+3. **Gather feedback** - What's confusing? What's missing?
+4. **Then** consider certification/faculty features based on actual needs

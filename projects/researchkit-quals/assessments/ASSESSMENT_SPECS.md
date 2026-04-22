@@ -249,11 +249,57 @@ Faculty and expert users (no student record) are not gated.
 
 ---
 
+---
+
+## New Assessment Items (TheoryForge-Aligned)
+
+Based on improvements to TheoryForge, the following supplements have been added:
+
+### Domain 1: Pattern Recognition
+- **L2 Supplement**: `tasks/level-2-domain-1-contribution-diagnosis.md`
+  - Tests ability to diagnose WHAT TYPE of contribution a pattern supports
+  - Not all patterns are "theory violation"—teaches elaboration, phenomenon, methodological, practical
+
+### Domain 4: Theoretical Framing
+- **L2 Task**: `tasks/level-2-domain-4-frame-comparison.md`
+  - Tests ability to COMPARE and SELECT between frames
+  - Emphasizes trade-off identification and justified selection
+- **L3 Supplement**: `tasks/level-3-reviewer-anticipation.md`
+  - Tests ability to ANTICIPATE hostile, supportive, and confused reviewers
+  - Requires simulating 3 reviews and developing defense plan
+
+### Domain 5: Evidence Evaluation
+- **L2 Task**: `tasks/level-2-domain-5-quant-qual-integration.md`
+  - Tests ability to INTEGRATE quant patterns with qual mechanisms
+  - Mapping matrix, convergence/divergence analysis, gap identification
+
+### Domain 7: Execution Discipline
+- **L1 Supplement**: `level-1-domain-7-execution-resilience.md`
+  - Tests ability to RECOVER from setbacks
+  - Scenarios: killed findings, framing failures, getting scooped, advisor pushback
+
+---
+
+## Rationale
+
+These additions address gaps revealed by TheoryForge development:
+
+| TheoryForge Feature | SkillForge Gap | New Assessment |
+|---------------------|----------------|----------------|
+| `/eval-contribution` | Assumed one contribution type | Contribution diagnosis in D1 |
+| `/integrate-quant-qual` | No integration testing | Quant-qual integration in D5 |
+| `/compare-frames` | No frame selection testing | Frame comparison in D4 |
+| `/simulate-review` | No anticipation testing | Reviewer anticipation in D4 L3 |
+| `/repair-state` | No resilience testing | Execution resilience in D7 |
+
+---
+
 ## What I Still Haven't Done
 
 1. **Actually create the assessment datasets** - This is real work
 2. **Build the quals CLI** - Commands to take/submit assessments
 3. **Create the Level 1 question banks** - Multiple choice from competency docs
 4. **Set up rubric-eval for D4** - Zuckerman criteria as rubric
+5. **Create seed data for new L2 tasks** - Especially for integration and frame comparison
 
 The competency definitions are design docs. The system isn't operational until the above exist.

@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "skillforge"
+version = "0.1.0"
+description = "Competency-based training for mixed-methods management research"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Matt Beane", email = "mbeane@ucsb.edu"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Education",
+]
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+skillforge = "cli.skillforge:main"
+
+[project.urls]
+Homepage = "https://github.com/mattbeane/skillforge"
+Repository = "https://github.com/mattbeane/skillforge"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cli*", "tools*", "assessments*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.md", "*.json"]

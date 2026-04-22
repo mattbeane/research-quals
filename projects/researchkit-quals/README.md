@@ -1,189 +1,143 @@
-# ResearchKit Quals
+# SkillForge
 
-A competency assessment and gating system for TheoryForge.
+**Train like a mixed-methods management scholar. Learn what you actually need to do the work.**
 
-## Purpose
+## The Problem
 
-TheoryForge is a powerful paper-mining pipeline that encodes expert research methodology knowledge. But power tools in untrained hands can produce polished-looking work without genuine understanding.
+PhD programs teach theory and methods separately from the messy reality of producing research. Students learn regression in one course, qualitative coding in another, and framing in a third—but nobody teaches them how these fit together when you're staring at a dataset wondering "is this a paper?"
 
-ResearchKit Quals ensures students develop the underlying competencies BEFORE gaining access to TheoryForge's advanced capabilities.
+Most doctoral training happens through apprenticeship: watch your advisor, absorb tacit knowledge, hope you pick up the pattern recognition that distinguishes publishable insights from noise. Some students get great mentorship. Many don't.
 
-## Philosophy
+Meanwhile, AI tools are getting powerful enough to generate polished-looking research outputs. Without the underlying judgment, students can produce work that *looks* rigorous but isn't.
 
-**Competency-based, not time-based**: No arbitrary waiting periods. Students prove readiness through demonstrated skill.
+## The Solution
 
-**Authentic assessment**: Tests require doing actual research work—not multiple choice questions about research.
+SkillForge is a competency-based training system for mixed-methods management research. It captures the tacit knowledge that expert researchers use—and makes it learnable.
 
-**Progressive unlocking**: Master fundamentals before accessing advanced capabilities. Domains build on each other.
+**Seven domains. Three levels. Real data.**
 
-**Advisor-verifiable**: Faculty can review student work and accelerate progression (but not skip domains).
+| Domain | The Question It Answers |
+|--------|------------------------|
+| 1. Pattern Recognition | Is this signal or noise? |
+| 2. Theoretical Positioning | What makes this a contribution? |
+| 3. Qualitative Mechanism | What's actually happening here? |
+| 4. Theoretical Framing | How do I position this for reviewers? |
+| 5. Epistemological Genre | Am I discovering or testing? |
+| 6. Adversarial Evidence | What challenges my interpretation? |
+| 7. Claim Verification | Does my evidence support my claims? |
 
-## The Seven Domains
+## How It Works
 
-| Domain | Core Skill | Unlocks |
-|--------|------------|---------|
-| 1. Pattern Recognition | See signal in noise | `/hunt-patterns` |
-| 2. Theoretical Positioning | Know what's a contribution | `/find-theory`, `/find-lens` |
-| 3. Qualitative Mechanism Extraction | Code data systematically | `/mine-qual` |
-| 4. Theoretical Framing | Generate and evaluate framings | `/smith-frames`, `/eval-zuckerman` |
-| 5. Epistemological Genre | Distinguish discovery from testing | `/eval-genre`, `/draft-paper` |
-| 6. Adversarial Evidence | Find disconfirming evidence | `/audit-claims`, `/verify-claims` |
-| 7. Claim Verification | Match claims to evidence honestly | `/package-verification` |
+### Level 1: Recognize
+Can you identify good practice when you see it? Multiple choice and short answer on real examples.
 
-## Assessment Levels
+*"A researcher finds that 12 of 15 informants support the mechanism, but 3 describe the opposite. What should they do?"*
 
-### Level 1: Knowledge Recognition
-- Necessary but not sufficient
-- Tests conceptual understanding
-- Identifies knowledge gaps to address
-- Multiple choice, terminology matching
+### Level 2: Apply
+Given real data, can you do it yourself—with feedback? Work on actual datasets, get detailed comparison to expert analysis.
 
-### Level 2: Application with Feedback
-- Students apply concepts to provided materials
-- AI provides detailed feedback comparing to expert work
-- Multiple attempts allowed
-- Used for learning and building competence
+*"Here are 10 interview excerpts. Code them for mechanisms. We'll compare your coding to how a published researcher coded the same data."*
 
-### Level 3: Authentic Performance
-- Real research task with real data
-- Work submitted for evaluation
-- Single attempt per assessment period
-- Required for unlocking TheoryForge commands
+### Level 3: Perform
+Can you do it independently on novel materials? Single attempt, expert evaluation, no hand-holding.
 
-## Time to Full Access
+*"Here's a new dataset. Find the patterns. Identify the mechanisms. We'll assess whether you found what an expert would find—and whether you avoided the traps."*
 
-Typical PhD student: 3-6 months
+## What Makes It Different
+
+**Built on real research.** Assessment materials come from published studies—anonymized dissertation data with expert baselines showing what skilled researchers actually found.
+
+**Tacit knowledge made explicit.** Each domain captures what experts do intuitively: the robustness checks they run first, the disconfirming evidence they hunt for, the overclaims they catch.
+
+**Progressive mastery.** You can't skip ahead. Pattern recognition comes before theoretical framing. Finding mechanisms comes before verifying claims. The sequence matters.
+
+**Advisor-compatible.** Faculty can review student work and certify competence. No arbitrary gatekeeping—just demonstrated skill.
+
+## Time to Competence
+
+**Typical PhD student:** 3-6 months to full competency across all domains
+
 - Domains 1-2: 2-4 weeks (foundational)
-- Domain 3: 2-4 weeks (requires data practice)
+- Domain 3: 2-4 weeks (requires coding practice)
 - Domains 4-5: 4-6 weeks (iteration and feedback)
 - Domains 6-7: 2-4 weeks (builds on prior)
 
-**Fast track**: Students with prior qual methods training can test out of Domains 1-3 immediately.
-
-## Directory Structure
-
-```
-researchkit-quals/
-├── competencies/       # Competency definitions & rubrics
-├── assessments/        # Assessment specifications by level
-├── materials/          # Datasets for assessments
-├── grading/            # Evaluation rubrics & expert baselines
-├── student-records/    # Progress tracking per student
-└── commands/           # CLI for taking/grading assessments
-```
-
-## Integration with TheoryForge
-
-TheoryForge checks `~/.researchkit-quals/[student-id]/unlock-status.json` before running gated commands. Students see helpful messages about which competencies they need to develop.
-
-## Advisor Role
-
-Advisors can:
-- Review student assessment work
-- Accelerate Level 2 → Level 3 progression
-- Certify competence without full assessment
-
-Advisors cannot:
-- Skip entire domains (pedagogical sequencing preserved)
-- Override without reviewing work
+**Fast track:** Students with prior qual methods training can test out of early domains immediately.
 
 ## Getting Started
 
 ```bash
 # Check your current status
-/quals-status
+skillforge status
 
 # Take a Level 1 assessment
-/quals-take domain-1 level-1
+skillforge take domain-1 level-1
 
 # Submit Level 3 work for evaluation
-/quals-submit domain-3 --file my-coding.md
+skillforge submit domain-3 --file my-coding.md
 ```
 
----
+## For Faculty: Contributing Data
 
-## For Contributors: The Anonymization Engine
+The system gets better with more expert baselines. Faculty can contribute anonymized data from their research to create new assessment materials.
 
-Faculty can contribute their dissertation or prior study data to create assessment materials. The anonymization engine ensures data is safe before contribution.
+### The Anonymization Engine
 
-### Three-Stage Process
+A three-stage pipeline protects your data:
 
-1. **Stage 1: Automatic Detection** (`anonymize.py detect`)
-   - NER (Named Entity Recognition) for people, orgs, locations
-   - Regex patterns for PII (emails, phones, dates, MRNs)
-   - Medical/hospital-specific patterns (OR numbers, room numbers)
-   - Risk flagging for identifying role+context combinations
+1. **Detect**: NER + regex patterns find names, places, organizations, dates
+2. **Review**: You verify each detection, assign pseudonyms, mark false positives
+3. **Apply**: Replacements applied, audit trail generated, sign-off template created
 
-2. **Stage 2: Guided Human Review** (`anonymize.py review`)
-   - Interactive CLI for reviewing each detected entity
-   - Assign pseudonyms (Dr. A, Hospital B, Site C)
-   - Mark false positives from NER errors
-   - Save progress and resume later
-
-3. **Stage 3: Verification & Application** (`anonymize.py apply`)
-   - Apply all replacements to source documents
-   - Generate comprehensive audit report
-   - Run re-identification check
-   - Create contributor sign-off template
-
-### Quick Start (Contributors)
+All processing runs locally. Your data never leaves your machine.
 
 ```bash
-# 1. Parse your Atlas.ti project
+# Parse your Atlas.ti project
 python tools/atlasti_parser.py "My Project.atlpac" parsed_data.json
 
-# 2. Run detection
+# Run the full anonymization pipeline
 python tools/anonymize.py detect parsed_data.json
-
-# 3. Review entities (interactive)
 python tools/anonymize.py review parsed_data.entities.json
-
-# 4. Apply and verify
 python tools/anonymize.py apply parsed_data.entities.reviewed.json parsed_data.json \
     --output-dir contribution/ --verify
 ```
 
-### What Gets Detected
+### Creating Expert Baselines
 
-| Type | Examples | Replacement Pattern |
-|------|----------|---------------------|
-| PERSON | Dr. Smith, Nurse Jones | Dr. A, Nurse B |
-| ORG | Lahey, MGH, Hospital | Hospital A, Center B |
-| GPE | Boston, California | Site A, Region B |
-| FAC | OR 17, Room 3, Floor 4 | OR 1, Room 1, Floor 1 |
-| DATE | 2014-07-15, July 2014 | [date removed] |
-| EMAIL | name@hospital.org | [email removed] |
-| PHONE | 617-555-1234 | [phone removed] |
+After anonymization, document your expert knowledge:
 
-### Trust Model
+- **Mechanisms found**: What did you discover in this data?
+- **Key evidence**: Which quotes reveal each mechanism?
+- **Disconfirming evidence**: What challenged your interpretation?
+- **What makes good coding**: Your tacit standards made explicit
 
-- **All processing runs locally** - your data never leaves your machine
-- **You review all detections** before anonymization is applied
-- **You sign off** on the final anonymized version
-- **Audit trail** documents every change for reproducibility
-
-### Output Package
-
-After anonymization, contributors receive:
-- `anonymized_quotations.json` - Ready for use in assessments
-- `audit_report.md` - Every replacement documented
-- `contributor_signoff.md` - Sign-off template for IRB compliance
-
----
+This becomes the ground truth students are assessed against.
 
 ## Current Status
 
 **Built:**
-- ✅ 7 competency domain definitions
-- ✅ Assessment specifications with scoring rubrics
-- ✅ Command→competency unlock mapping
-- ✅ Atlas.ti parser (extracts quotes with codes)
-- ✅ Anonymization engine (3-stage NER + review + apply)
+- ✅ 7 competency domain definitions with rubrics
+- ✅ Level 1 assessments for Domains 1, 3, 7
+- ✅ Atlas.ti parser + 3-stage anonymization engine
+- ✅ Expert baseline from published robotic surgery research
+- ✅ Scoring specifications for all levels
 
-**Not Yet Built:**
-- ⏳ Assessment question banks (Level 1)
-- ⏳ Expert baselines (from contributed data)
-- ⏳ quals CLI commands (take, submit, status)
-- ⏳ TheoryForge integration code
+**Coming:**
+- ⏳ Level 2-3 assessments
+- ⏳ CLI for taking/submitting assessments
+- ⏳ Student record tracking
+- ⏳ Additional expert baselines from faculty contributions
 
-See `TODO.md` for implementation roadmap.
+## Philosophy
+
+**Competency over credentials.** Time in program doesn't equal readiness. Demonstrated skill does.
+
+**Authentic over artificial.** Assessments use real data, not toy examples. If you can do it here, you can do it in your research.
+
+**Transparent over mysterious.** The rubrics are public. The expert baselines show what good looks like. No hidden criteria.
+
+**Formative over punitive.** Level 1-2 exists for learning. Fail, get feedback, try again. Level 3 is where it counts.
+
+---
+
+*SkillForge: Because "I took a methods course" isn't the same as "I can do research."*

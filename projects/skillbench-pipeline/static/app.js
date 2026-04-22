@@ -83,6 +83,24 @@ function loadTab(tab) {
 async function loadSummary() {
   const s = await api('/api/dashboard/summary');
   $('#stat-deals').textContent = s.active_deals;
+  // Assessment prospects counter with growth signal
+  const a = s.assessments || {};
+  $('#stat-assessments').textContent = a.qualified_plus || 0;
+  const trendEl = $('#stat-assessments-trend');
+  if (trendEl) {
+    const sig = a.growth_signal || 'steady';
+    const n7 = a.new_last_7d || 0;
+    if (sig === 'accelerating') {
+      trendEl.textContent = `\u2191 ${n7} new this week`;
+      trendEl.className = 'stat-sub trend-up';
+    } else if (sig === 'slowing') {
+      trendEl.textContent = `\u2193 ${n7} new this week`;
+      trendEl.className = 'stat-sub trend-down';
+    } else {
+      trendEl.textContent = n7 > 0 ? `\u2192 ${n7} new this week` : '\u2192 steady';
+      trendEl.className = 'stat-sub trend-flat';
+    }
+  }
   $('#stat-arr').textContent = fmtDollars(s.arr?.total_cents || 0);
   $('#stat-onetime').textContent = fmtDollars(s.one_time?.total_cents || 0);
   $('#stat-weighted').textContent = fmtDollars(s.weighted_value_cents);
